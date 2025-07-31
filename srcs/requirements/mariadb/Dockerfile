@@ -1,8 +1,8 @@
 FROM debian:bullseye
-RUN apt update
-RUN apt upgrade -y
-RUN apt-get install mariadb-server -y
-COPY /conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY ./tools/start-service.sh /.
-RUN chmod 777 /start-service.sh
-ENTRYPOINT ["bash", "/start-service.sh"]
+RUN apt update -y && apt upgrade -y && \
+    apt install -y mariadb-server && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/mariadb.sh /usr/local/bin/mariadb.sh
+RUN chmod +x /usr/local/bin/mariadb.sh
+CMD ["/usr/local/bin/mariadb.sh"]

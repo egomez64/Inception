@@ -1,12 +1,14 @@
 FROM debian:bullseye
-RUN apt update
-RUN apt upgrade -y
-RUN apt install nginx -y
-RUN mkdir -p /etc/nginx/ssl
-RUN apt install openssl -y
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=CM/L=Angouleme/O=42/OU=42/CN=egomez.42.fr/UID=egomez"
-RUN mkdir -p /var/run/nginx
+RUN apt update -y && apt upgrade -y && \
+    apt install -y nginx openssl
+RUN mkdir -p /etc/nginx/ssl && \
+    openssl req -x509 -nodes \
+    -days 365 \
+    -keyout /etc/nginx/ssl/inception.key \
+    -out /etc/nginx/ssl/inception.crt \
+    -subj "/CN=${DOMAIN_NAME}"
+RUN mkdir -p /var/www/wordpress /var/run/nginx && \
+    chmod 755 /var/www/wordpress && \
+    chown -R www-data:www-data /var/www/wordpress
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-RUN chmod 755 /var/www/html
-RUN chown -R www-data:www-data /var/www/html
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
