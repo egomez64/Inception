@@ -21,10 +21,5 @@ wp user create \
     --role=editor \
     --allow-root
 wp theme activate twentytwentyfour --allow-root
-sed -i "/\/\* That's all, stop editing! Happy publishing. \*\//i \
-define('WP_REDIS_CLIENT', 'phpredis');\ndefine('WP_REDIS_HOST', 'redis');\ndefine('WP_REDIS_PORT', 6379);\ndefine('WP_CACHE', true);
-" wp-config.php
-wp plugin install redis-cache --activate --allow-root
-wp redis enable --allow-root --path=/var/www/wordpress
 mkdir -p /run/php
 php-fpm7.4 -F
